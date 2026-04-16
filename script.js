@@ -1,3 +1,6 @@
+computerScore = 0;
+humainScore = 0;
+
 function getComputerChoice() {
   choice = Math.random() * 3;
 
