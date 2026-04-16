@@ -1,20 +1,27 @@
-computerScore = 0;
-humainScore = 0;
+function playGame() {
+  const NUMBER_OF_ROUND = 5;
 
-function getComputerChoice() {
-  choice = Math.random() * 3;
+  let computerScore = 0;
+  let humainScore = 0;
 
-  if (choice < 1) {
-    return "ROCK";
-  } else if (choice < 2) {
-    return "PAPER";
-  } else {
-    return "SCISSORS";
+  for (let i = 1; i <= NUMBER_OF_ROUND; i++) {
+    const computerChoice = getComputerChoice();
+    const humanChoice = getHumainChoice();
+
+    console.log(`Computer choice : ${computerChoice}`);
+
+    winner = playRound(computerChoice, humanChoice);
+
+    if (winner == "HUMAIN") {
+      humainScore++;
+    } else if (winner == "COMPUTER") {
+      computerScore++;
+    }
+
+    console.log(
+      `Manche ${i}/${NUMBER_OF_ROUND} -> Computer : ${computerScore} | Humain : ${humainScore}`,
+    );
   }
-}
-
-function getHumainChoice() {
-  return prompt("Rock, Paper or Scissors ?");
 }
 
 function playRound(computerChoice, humanChoice) {
@@ -32,11 +39,27 @@ function playRound(computerChoice, humanChoice) {
 
   if (isHumanWin) {
     console.log(`You win ! ${humanChoice} beats ${computerChoice}.`);
-    humainScore++;
+    return "HUMAIN";
   } else {
     console.log(`You loose ! ${computerChoice} beats ${humanChoice}.`);
-    computerScore++;
+    return "COMPUTER";
   }
 }
 
-playRound("PAPER", "ROCK");
+function getComputerChoice() {
+  choice = Math.random() * 3;
+
+  if (choice < 1) {
+    return "ROCK";
+  } else if (choice < 2) {
+    return "PAPER";
+  } else {
+    return "SCISSORS";
+  }
+}
+
+function getHumainChoice() {
+  return prompt("Rock, Paper or Scissors ?");
+}
+
+playGame();
