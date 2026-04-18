@@ -1,34 +1,40 @@
-function playGame() {
-  const NUMBER_OF_ROUND = 5;
+const SCORE_FOR_WIN = 5;
+let computerScore = 0;
+let playerScore = 0;
 
-  let computerScore = 0;
-  let humanScore = 0;
+const result = document.querySelector("#result");
+const score = document.querySelector("#score");
+const computerSpan = document.querySelector("#computer-choice");
+const playerScoreSpan = document.querySelector("#player-score");
+const computerScoreSpan = document.querySelector("#computer-score");
 
-  for (let i = 1; i <= NUMBER_OF_ROUND; i++) {
+const rpsButton = document.querySelectorAll(".rps-button");
+
+rpsButton.forEach((button) =>
+  button.addEventListener("click", () => {
     const computerChoice = getComputerChoice();
-    const humanChoice = getHumanChoice();
-
-    console.log(`Computer choice : ${computerChoice}`);
-
-    winner = playRound(computerChoice, humanChoice);
+    computerSpan.textContent = computerChoice;
+    const winner = playRound(computerChoice, button.textContent);
 
     if (winner == "HUMAN") {
-      humanScore++;
+      playerScore++;
     } else if (winner == "COMPUTER") {
       computerScore++;
     }
 
-    console.log(
-      `Manche ${i}/${NUMBER_OF_ROUND} -> Computer : ${computerScore} | Human : ${humanScore}`,
-    );
-  }
-}
+    updateScore();
+
+    if (playerScore == SCORE_FOR_WIN || computerScore == SCORE_FOR_WIN) {
+      endGame();
+    }
+  }),
+);
 
 function playRound(computerChoice, humanChoice) {
   humanChoice = humanChoice.toUpperCase();
 
   if (humanChoice == computerChoice) {
-    console.log(`Draw ! Computer also choose ${computerChoice} !`);
+    result.textContent = `Draw ! Computer also choose ${computerChoice} !`;
     return;
   }
 
@@ -38,10 +44,10 @@ function playRound(computerChoice, humanChoice) {
     (humanChoice == "SCISSORS" && computerChoice == "PAPER");
 
   if (isHumanWin) {
-    console.log(`You win ! ${humanChoice} beats ${computerChoice}.`);
+    result.textContent = `You win ! ${humanChoice} beats ${computerChoice}.`;
     return "HUMAN";
   } else {
-    console.log(`You loose ! ${computerChoice} beats ${humanChoice}.`);
+    result.textContent = `You loose ! ${computerChoice} beats ${humanChoice}.`;
     return "COMPUTER";
   }
 }
@@ -58,13 +64,38 @@ function getComputerChoice() {
   }
 }
 
-function getHumanChoice() {
-  return prompt("Rock, Paper or Scissors ?");
+function endGame() {
+  rpsButton.forEach((button) => (button.disabled = true));
+
+  const endGameDiv = document.createElement("div");
+  const winnerAnnouncement = document.createTextNode(
+    playerScore == SCORE_FOR_WIN
+      ? "You win ! Congratulations !"
+      : "Too bad ! You loose. Try again !",
+  );
+
+  const tryAgainButton = document.createElement("button");
+  tryAgainButton.textContent = "Try again";
+  tryAgainButton.addEventListener("click", () => {
+    resetScore();
+    rpsButton.forEach((button) => {
+      button.disabled = false;
+      endGameDiv.remove();
+    });
+  });
+  endGameDiv.appendChild(winnerAnnouncement);
+  endGameDiv.appendChild(tryAgainButton);
+  score.appendChild(endGameDiv);
 }
 
-const rpsButton = document.querySelectorAll(".rps-button");
-rpsButton.forEach((button) =>
-  button.addEventListener("click", () =>
-    playRound(getComputerChoice(), button.textContent),
-  ),
-);
+function resetScore() {
+  playerScore = 0;
+  computerScore = 0;
+
+  updateScore();
+}
+
+function updateScore() {
+  playerScoreSpan.textContent = playerScore;
+  computerScoreSpan.textContent = computerScore;
+}
