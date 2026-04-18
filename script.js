@@ -62,4 +62,9 @@ function getHumanChoice() {
   return prompt("Rock, Paper or Scissors ?");
 }
 
-playGame();
+const rpsButton = document.querySelectorAll(".rps-button");
+rpsButton.forEach((button) =>
+  button.addEventListener("click", () =>
+    playRound(getComputerChoice(), button.textContent),
+  ),
+);
